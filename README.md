@@ -196,6 +196,68 @@ results.to_json("results.json")
 results.to_csv("results.csv")
 ```
 
+### Prompt Chains
+
+Pipe the output of one prompt into the next — across different models:
+
+```python
+from promptracer import Chain
+
+result = (
+    Chain()
+    .step("Summarize this article: {{input}}", model="openai/gpt-4o")
+    .step("Translate to Spanish: {{output}}", model="anthropic/claude-sonnet-4-6")
+    .step("Make it sound poetic: {{output}}", model="ollama/llama3")
+    .run(input="Long article text here...")
+)
+
+result.print()           # Shows each step with latency/cost
+print(result.final_response)
+print(result.total_cost)  # Total across all steps
+```
+
+### Model Leaderboard
+
+Race models and rank them by score:
+
+```bash
+promptracer leaderboard suites/translation.yaml
+# ┌──────┬──────────────────────────────┬───────────┬───────────┬─────────────┬────────────┐
+# │ Rank │ Model                        │ Avg Score │ Pass Rate │ Avg Latency │ Total Cost │
+# ├──────┼──────────────────────────────┼───────────┼───────────┼─────────────┼────────────┤
+# │ 1st  │ openai/gpt-4o               │ 9.2/10    │ 100%      │ 0.85s       │ $0.0032    │
+# │ 2nd  │ anthropic/claude-sonnet-4-6  │ 8.8/10    │ 100%      │ 0.92s       │ $0.0028    │
+# │ 3rd  │ ollama/llama3               │ 7.1/10    │ 75%       │ 2.10s       │ FREE       │
+# └──────┴──────────────────────────────┴───────────┴───────────┴─────────────┴────────────┘
+```
+
+### Cost Tracking
+
+Every run is automatically logged. Check your spending anytime:
+
+```bash
+promptracer cost           # All time
+promptracer cost today     # Last 24h
+promptracer cost week      # Last 7 days
+promptracer cost month     # Last 30 days
+promptracer cost --clear   # Reset history
+```
+
+### Project Config
+
+Create a `.promptracer.yaml` in your project root:
+
+```yaml
+default_model: openai/gpt-4o
+default_judge: openai/gpt-4o-mini
+models:
+  - openai/gpt-4o
+  - anthropic/claude-sonnet-4-6
+  - ollama/llama3
+criteria: "accuracy, relevance, and completeness"
+track_costs: true
+```
+
 ### Async Support
 
 ```python

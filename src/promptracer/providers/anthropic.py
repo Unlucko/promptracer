@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Generator
 from typing import Any
 
 from promptracer.prompt import RunResult
@@ -55,6 +56,28 @@ class AnthropicProvider(Provider):
             cost=_estimate_cost(self.model, input_tokens, output_tokens),
             prompt_text=prompt,
         )
+
+    def stream(
+        self, prompt: str, *, system: str | None = None, **kwargs: Any
+    ) -> Generator[str, None, None]:
+        try:
+            import anthropic
+        except ImportError:
+            raise ImportError("Install anthropic: pip install promptracer[anthropic]")
+
+        client = anthropic.Anthropic(api_key=self._get_env("ANTHROPIC_API_KEY"))
+        api_kwargs: dict[str, Any] = {
+            "model": self.model,
+            "max_tokens": kwargs.pop("max_tokens", 4096),
+            "messages": [{"role": "user", "content": prompt}],
+            **kwargs,
+        }
+        if system:
+            api_kwargs["system"] = system
+
+        with client.messages.stream(**api_kwargs) as stream:
+            for text in stream.text_stream:
+                yield text
 
     async def acomplete(
         self, prompt: str, *, system: str | None = None, **kwargs: Any

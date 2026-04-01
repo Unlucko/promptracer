@@ -198,5 +198,40 @@ def init(
     console.print(f"[green]Created prompt file:[/] {file_path}")
 
 
+@app.command()
+def cost(
+    period: str = typer.Argument("all", help="Period: today, week, month, or all"),
+    clear: bool = typer.Option(False, "--clear", help="Clear usage history"),
+) -> None:
+    """Show cost report across all sessions."""
+    from promptracer.tracker import report, clear_log
+
+    if clear:
+        clear_log()
+        console.print("[green]Usage history cleared.[/green]")
+        return
+    report(period)
+
+
+@app.command()
+def leaderboard(
+    suite: str = typer.Argument(help="Path to a test suite YAML file"),
+    output: Optional[str] = typer.Option(None, "--output", "-o", help="Export to JSON"),
+) -> None:
+    """Run a suite and display a model leaderboard ranked by score."""
+    from promptracer.batch import run_suite
+    from promptracer.leaderboard import build_leaderboard
+
+    with console.status("Running suite..."):
+        results = run_suite(suite)
+
+    lb = build_leaderboard(results)
+    lb.print_table()
+
+    if output:
+        lb.to_json(output)
+        console.print(f"[green]Leaderboard exported to:[/] {output}")
+
+
 if __name__ == "__main__":
     app()

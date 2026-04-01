@@ -115,7 +115,13 @@ class Prompt:
 
         rendered = self.render()
         provider = get_provider(model)
-        return provider.complete(rendered, system=self.system, **kwargs)
+        result = provider.complete(rendered, system=self.system, **kwargs)
+        try:
+            from promptracer.tracker import log_run
+            log_run(result)
+        except Exception:
+            pass
+        return result
 
     async def arun(self, model: str, **kwargs: Any) -> RunResult:
         """Async version of run()."""
@@ -123,7 +129,13 @@ class Prompt:
 
         rendered = self.render()
         provider = get_provider(model)
-        return await provider.acomplete(rendered, system=self.system, **kwargs)
+        result = await provider.acomplete(rendered, system=self.system, **kwargs)
+        try:
+            from promptracer.tracker import log_run
+            log_run(result)
+        except Exception:
+            pass
+        return result
 
     def save(self, path: str | Path) -> None:
         """Save prompt to a YAML file."""

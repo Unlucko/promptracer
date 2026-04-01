@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Generator
 from typing import Any
 
 from promptracer.prompt import RunResult
@@ -56,6 +57,28 @@ class GeminiProvider(Provider):
             cost=_estimate_cost(self.model, input_tokens, output_tokens),
             prompt_text=prompt,
         )
+
+    def stream(
+        self, prompt: str, *, system: str | None = None, **kwargs: Any
+    ) -> Generator[str, None, None]:
+        try:
+            from google import genai
+        except ImportError:
+            raise ImportError("Install google-genai: pip install promptracer[google]")
+
+        client = genai.Client(api_key=self._get_env("GEMINI_API_KEY"))
+        config: dict[str, Any] = {}
+        if system:
+            config["system_instruction"] = system
+
+        for chunk in client.models.generate_content_stream(
+            model=self.model,
+            contents=prompt,
+            config=config if config else None,
+            **kwargs,
+        ):
+            if chunk.text:
+                yield chunk.text
 
     async def acomplete(
         self, prompt: str, *, system: str | None = None, **kwargs: Any

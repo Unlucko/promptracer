@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Generator
 from typing import Any
 
 from promptracer.prompt import RunResult
@@ -55,6 +56,27 @@ class OpenAIProvider(Provider):
             cost=_estimate_cost(self.model, input_tokens, output_tokens),
             prompt_text=prompt,
         )
+
+    def stream(
+        self, prompt: str, *, system: str | None = None, **kwargs: Any
+    ) -> Generator[str, None, None]:
+        try:
+            from openai import OpenAI
+        except ImportError:
+            raise ImportError("Install openai: pip install promptracer[openai]")
+
+        client = OpenAI(api_key=self._get_env("OPENAI_API_KEY"))
+        messages: list[dict[str, str]] = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": prompt})
+
+        stream = client.chat.completions.create(
+            model=self.model, messages=messages, stream=True, **kwargs
+        )
+        for chunk in stream:
+            if chunk.choices and chunk.choices[0].delta.content:
+                yield chunk.choices[0].delta.content
 
     async def acomplete(
         self, prompt: str, *, system: str | None = None, **kwargs: Any

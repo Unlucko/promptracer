@@ -1,4 +1,4 @@
-"""PromptLab CLI — test, compare, and evaluate prompts from the terminal."""
+"""PromptRacer CLI — test, compare, and evaluate prompts from the terminal."""
 
 from __future__ import annotations
 
@@ -33,9 +33,11 @@ def run(
     model: str = typer.Option("openai/gpt-4o", "--model", "-m", help="Model to use"),
     var: list[str] = typer.Option([], "--var", "-v", help="Variables as key=value"),
     system: Optional[str] = typer.Option(None, "--system", "-s", help="System prompt"),
+    stream: bool = typer.Option(False, "--stream", help="Stream response in real-time"),
 ) -> None:
     """Run a prompt against a single model."""
     from promptracer.prompt import Prompt
+    from promptracer.providers import get_provider
 
     if Path(prompt).exists() and prompt.endswith((".yaml", ".yml")):
         p = Prompt.load(prompt)
@@ -47,11 +49,19 @@ def run(
     if system:
         p.system = system
 
-    with console.status(f"Running on {model}..."):
-        result = p.run(model)
+    if stream:
+        rendered = p.render()
+        provider = get_provider(model)
+        console.print(f"[cyan bold]{model}[/]\n")
+        for token in provider.stream(rendered, system=p.system):
+            console.print(token, end="")
+        console.print()
+    else:
+        with console.status(f"Running on {model}..."):
+            result = p.run(model)
 
-    console.print(f"\n[cyan bold]{result.model}[/] [dim]({result.latency:.2f}s, ${result.cost:.4f})[/]\n")
-    console.print(result.response)
+        console.print(f"\n[cyan bold]{result.model}[/] [dim]({result.latency:.2f}s, ${result.cost:.4f})[/]\n")
+        console.print(result.response)
 
 
 @app.command()
@@ -125,6 +135,47 @@ def eval(
         eval_result = evaluate(result, criteria=criteria, judge=judge)
 
     eval_result.print()
+
+
+@app.command()
+def batch(
+    suite: str = typer.Argument(help="Path to a test suite YAML file"),
+    output: Optional[str] = typer.Option(None, "--output", "-o", help="Export results to JSON file"),
+) -> None:
+    """Run a batch test suite from a YAML file."""
+    from promptracer.batch import run_suite
+
+    with console.status("Running test suite..."):
+        results = run_suite(suite)
+
+    for batch_result in results:
+        batch_result.print_table()
+        console.print()
+
+    if output:
+        import json
+
+        export = []
+        for br in results:
+            export.append({
+                "model": br.model,
+                "avg_score": br.avg_score,
+                "avg_latency": round(br.avg_latency, 3),
+                "total_cost": round(br.total_cost, 6),
+                "cases": [
+                    {
+                        "name": tc.name,
+                        "response": run.response,
+                        "latency": round(run.latency, 3),
+                        "cost": round(run.cost, 6),
+                        "score": ev.score if ev else None,
+                        "reasoning": ev.reasoning if ev else None,
+                    }
+                    for tc, run, ev in br.results
+                ],
+            })
+        Path(output).write_text(json.dumps(export, indent=2, ensure_ascii=False))
+        console.print(f"[green]Results exported to:[/] {output}")
 
 
 @app.command()

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "promptracer"
-version = "0.1.0"
+version = "0.2.0"
 description = "The open-source prompt engineering toolkit. Test, compare, and evaluate prompts across any LLM."
 readme = "README.md"
 license = "MIT"

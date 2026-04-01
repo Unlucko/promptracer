@@ -79,6 +79,26 @@ class CompareResult:
             for r in self.results
         ]
 
+    def to_json(self, path: str) -> None:
+        """Export results to a JSON file."""
+        import json
+        from pathlib import Path
+
+        Path(path).write_text(json.dumps(self.to_dict(), indent=2, ensure_ascii=False))
+
+    def to_csv(self, path: str) -> None:
+        """Export results to a CSV file."""
+        import csv
+        from pathlib import Path
+
+        rows = self.to_dict()
+        if not rows:
+            return
+        with Path(path).open("w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=rows[0].keys())
+            writer.writeheader()
+            writer.writerows(rows)
+
 
 def compare(
     prompt: Prompt | str,

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from abc import ABC, abstractmethod
+from collections.abc import Generator
 from typing import Any
 
 from promptracer.prompt import RunResult
@@ -33,3 +34,10 @@ class Provider(ABC):
         self, prompt: str, *, system: str | None = None, **kwargs: Any
     ) -> RunResult:
         ...
+
+    def stream(
+        self, prompt: str, *, system: str | None = None, **kwargs: Any
+    ) -> Generator[str, None, None]:
+        """Stream response tokens. Default falls back to complete()."""
+        result = self.complete(prompt, system=system, **kwargs)
+        yield result.response

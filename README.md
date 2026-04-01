@@ -18,6 +18,10 @@
 - **LLM-as-judge evaluation** — automated scoring with customizable criteria
 - **Version your prompts** — save as YAML, track changes with git
 - **Template variables** — reusable prompts with `{{placeholders}}`
+- **Batch test suites** — define test cases in YAML, run them all at once
+- **Streaming** — real-time token streaming in the CLI
+- **Export** — save results to JSON or CSV
+- **Retry & rate limiting** — built-in resilience for production use
 - **CLI + Python API** — use it however you want
 
 ## Install
@@ -140,6 +144,56 @@ promptracer eval "Write a haiku about coding" \
 
 # Create a prompt template
 promptracer init my-prompt
+```
+
+### Batch Test Suites
+
+Define test cases in YAML and race models against each other:
+
+```yaml
+# suites/translation.yaml
+template: "Translate to {{lang}}: {{text}}"
+system: "You are a professional translator"
+models:
+  - openai/gpt-4o
+  - anthropic/claude-sonnet-4-6
+  - ollama/llama3
+judge: openai/gpt-4o-mini
+criteria: "accuracy and natural fluency"
+cases:
+  - name: "Spanish → English"
+    vars: { lang: English, text: "Hola, ¿cómo estás?" }
+    expected: "Hello, how are you?"
+  - name: "Technical jargon"
+    vars: { lang: English, text: "El algoritmo converge rápidamente" }
+```
+
+```python
+from promptracer import run_suite
+
+results = run_suite("suites/translation.yaml")
+for batch in results:
+    batch.print_table()
+```
+
+```bash
+# From CLI
+promptracer batch suites/translation.yaml
+promptracer batch suites/translation.yaml -o results.json
+```
+
+### Streaming
+
+```bash
+promptracer run "Write a poem about AI" -m openai/gpt-4o --stream
+```
+
+### Export Results
+
+```python
+results = compare(p, models=["openai/gpt-4o", "ollama/llama3"])
+results.to_json("results.json")
+results.to_csv("results.csv")
 ```
 
 ### Async Support

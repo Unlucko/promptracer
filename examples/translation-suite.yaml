@@ -1,0 +1,32 @@
+template: "Translate to {{lang}}: {{text}}"
+system: "You are a professional translator. Translate accurately and naturally."
+models:
+  - openai/gpt-4o
+  - anthropic/claude-sonnet-4-6
+  - ollama/llama3
+judge: openai/gpt-4o-mini
+criteria: "accuracy and natural fluency of the translation"
+cases:
+  - name: "Spanish → English"
+    vars:
+      lang: English
+      text: "Hola, ¿cómo estás?"
+    expected: "Hello, how are you?"
+
+  - name: "French → English"
+    vars:
+      lang: English
+      text: "Bonjour le monde"
+    expected: "Hello world"
+
+  - name: "English → Spanish"
+    vars:
+      lang: Spanish
+      text: "The weather is beautiful today"
+    expected: "El clima está hermoso hoy"
+
+  - name: "Technical jargon"
+    vars:
+      lang: English
+      text: "El algoritmo de aprendizaje automático converge rápidamente"
+    expected: "The machine learning algorithm converges quickly"

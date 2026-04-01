@@ -5,8 +5,8 @@ from __future__ import annotations
 import time
 from typing import Any
 
-from promptpilot.prompt import RunResult
-from promptpilot.providers.base import Provider
+from promptracer.prompt import RunResult
+from promptracer.providers.base import Provider
 
 _PRICING: dict[str, tuple[float, float]] = {
     "gemini-2.0-flash": (0.10, 0.40),
@@ -25,7 +25,7 @@ class GeminiProvider(Provider):
         try:
             from google import genai
         except ImportError:
-            raise ImportError("Install google-genai: pip install promptpilot[google]")
+            raise ImportError("Install google-genai: pip install promptracer[google]")
 
         client = genai.Client(api_key=self._get_env("GEMINI_API_KEY"))
 
@@ -63,7 +63,7 @@ class GeminiProvider(Provider):
         try:
             from google import genai
         except ImportError:
-            raise ImportError("Install google-genai: pip install promptpilot[google]")
+            raise ImportError("Install google-genai: pip install promptracer[google]")
 
         client = genai.Client(api_key=self._get_env("GEMINI_API_KEY"))
 

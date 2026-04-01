@@ -9,7 +9,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 
-from promptpilot.prompt import RunResult
+from promptracer.prompt import RunResult
 
 
 @dataclass
@@ -67,7 +67,7 @@ def evaluate(
         judge: Model to use as judge.
         **kwargs: Additional arguments passed to the judge provider.
     """
-    from promptpilot.providers import get_provider
+    from promptracer.providers import get_provider
 
     provider = get_provider(judge)
     eval_prompt = _EVAL_PROMPT.format(

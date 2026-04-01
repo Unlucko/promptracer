@@ -2,16 +2,16 @@
 
 from __future__ import annotations
 
-from promptpilot.providers.base import Provider
+from promptracer.providers.base import Provider
 
 _PROVIDER_MAP: dict[str, type[Provider]] = {}
 
 
 def _register_defaults() -> None:
-    from promptpilot.providers.openai import OpenAIProvider
-    from promptpilot.providers.anthropic import AnthropicProvider
-    from promptpilot.providers.gemini import GeminiProvider
-    from promptpilot.providers.ollama import OllamaProvider
+    from promptracer.providers.openai import OpenAIProvider
+    from promptracer.providers.anthropic import AnthropicProvider
+    from promptracer.providers.gemini import GeminiProvider
+    from promptracer.providers.ollama import OllamaProvider
 
     _PROVIDER_MAP.update(
         {

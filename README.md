@@ -1,16 +1,16 @@
-# PromptPilot
+# PromptRacer
 
 **The open-source prompt engineering toolkit.** Test, compare, and evaluate your prompts across any LLM — from your terminal or Python code.
 
 > Free & open-source alternative to LangSmith, PromptLayer, and Humanloop.
 
-[![PyPI](https://img.shields.io/pypi/v/promptpilot)](https://pypi.org/project/promptpilot/)
+[![PyPI](https://img.shields.io/pypi/v/promptracer)](https://pypi.org/project/promptracer/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 ---
 
-## Why PromptPilot?
+## Why PromptRacer?
 
 - **One `pip install`** — no web app, no database, no account needed
 - **Multi-provider** — OpenAI, Anthropic, Google Gemini, Ollama (local models)
@@ -23,13 +23,13 @@
 ## Install
 
 ```bash
-pip install promptpilot
+pip install promptracer
 
 # With specific providers:
-pip install promptpilot[openai]          # OpenAI
-pip install promptpilot[anthropic]       # Anthropic (Claude)
-pip install promptpilot[google]          # Google Gemini
-pip install promptpilot[all]             # All providers
+pip install promptracer[openai]          # OpenAI
+pip install promptracer[anthropic]       # Anthropic (Claude)
+pip install promptracer[google]          # Google Gemini
+pip install promptracer[all]             # All providers
 ```
 
 Ollama works out of the box — no extra install needed (just have Ollama running locally).
@@ -39,7 +39,7 @@ Ollama works out of the box — no extra install needed (just have Ollama runnin
 ### Python API
 
 ```python
-from promptpilot import Prompt, compare, evaluate
+from promptracer import Prompt, compare, evaluate
 
 # Create a prompt with template variables
 p = Prompt("Translate to {{lang}}: {{text}}")
@@ -71,7 +71,7 @@ results.print_table()
 # Evaluate quality with LLM-as-judge
 eval_result = evaluate(result, criteria="accuracy", judge="openai/gpt-4o-mini")
 eval_result.print()
-# ╭──────────── PromptPilot Eval ────────────╮
+# ╭──────────── PromptRacer Eval ────────────╮
 # │ Score: 9/10                            │
 # │ Criteria: accuracy                     │
 # │ Reasoning: Accurate translation...     │
@@ -121,33 +121,33 @@ export ANTHROPIC_API_KEY=sk-ant-...
 export GEMINI_API_KEY=AI...
 
 # Run a prompt
-promptpilot run "What is Python?" -m openai/gpt-4o
+promptracer run "What is Python?" -m openai/gpt-4o
 
 # Compare models
-promptpilot compare "Explain quantum computing" \
+promptracer compare "Explain quantum computing" \
   -m "openai/gpt-4o,anthropic/claude-sonnet-4-6,ollama/llama3"
 
 # With template variables
-promptpilot compare "Translate to {{lang}}: {{text}}" \
+promptracer compare "Translate to {{lang}}: {{text}}" \
   -v lang=French -v text="Good morning" \
   -m "openai/gpt-4o,gemini/gemini-2.5-flash"
 
 # Evaluate a response
-promptpilot eval "Write a haiku about coding" \
+promptracer eval "Write a haiku about coding" \
   -m openai/gpt-4o \
   -j openai/gpt-4o-mini \
   -c "creativity and adherence to haiku format"
 
 # Create a prompt template
-promptpilot init my-prompt
+promptracer init my-prompt
 ```
 
 ### Async Support
 
 ```python
 import asyncio
-from promptpilot import Prompt
-from promptpilot.compare import acompare
+from promptracer import Prompt
+from promptracer.compare import acompare
 
 async def main():
     p = Prompt("Explain {{topic}} simply")
@@ -179,8 +179,8 @@ Contributions are welcome! Please open an issue or submit a PR.
 
 ```bash
 # Dev setup
-git clone https://github.com/Unlucko/promptpilot.git
-cd promptpilot
+git clone https://github.com/Unlucko/promptracer.git
+cd promptracer
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 

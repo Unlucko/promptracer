@@ -1,7 +1,7 @@
 """Tests for compare module (unit tests with mocked providers)."""
 
-from promptpilot.compare import CompareResult
-from promptpilot.prompt import RunResult
+from promptracer.compare import CompareResult
+from promptracer.prompt import RunResult
 
 
 def _make_result(model: str, latency: float, cost: float) -> RunResult:

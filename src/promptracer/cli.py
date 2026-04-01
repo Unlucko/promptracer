@@ -233,5 +233,42 @@ def leaderboard(
         console.print(f"[green]Leaderboard exported to:[/] {output}")
 
 
+@app.command()
+def play(
+    model: str = typer.Option("openai/gpt-4o", "--model", "-m", help="Starting model"),
+    system: Optional[str] = typer.Option(None, "--system", "-s", help="System prompt"),
+) -> None:
+    """Start an interactive playground REPL."""
+    from promptracer.playground import playground
+
+    playground(model=model, system=system)
+
+
+@app.command()
+def optimize(
+    prompt: str = typer.Argument(help="Prompt text or path to a .yaml prompt file"),
+    model: str = typer.Option("openai/gpt-4o", "--model", "-m", help="Model to test with"),
+    optimizer: str = typer.Option("openai/gpt-4o", "--optimizer", help="Model to suggest improvements"),
+    var: list[str] = typer.Option([], "--var", "-v", help="Variables as key=value"),
+    iterations: int = typer.Option(3, "--iterations", "-n", help="Number of optimization rounds"),
+) -> None:
+    """Auto-optimize a prompt using LLM feedback."""
+    from promptracer.optimizer import optimize as do_optimize
+    from promptracer.prompt import Prompt
+
+    if Path(prompt).exists() and prompt.endswith((".yaml", ".yml")):
+        p = Prompt.load(prompt)
+    else:
+        p = Prompt(prompt)
+
+    if var:
+        p.set_vars(**_parse_vars(var))
+
+    with console.status("Optimizing prompt..."):
+        result = do_optimize(p, model=model, optimizer=optimizer, iterations=iterations)
+
+    result.print()
+
+
 if __name__ == "__main__":
     app()

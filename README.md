@@ -21,6 +21,13 @@
 - **Batch test suites** — define test cases in YAML, run them all at once
 - **Streaming** — real-time token streaming in the CLI
 - **Export** — save results to JSON or CSV
+- **Prompt chains** — pipe output between models: summarize → translate → polish
+- **Auto-optimizer** — LLM iteratively improves your prompts
+- **Interactive playground** — REPL for live testing
+- **Model leaderboard** — rank models by score across test suites
+- **Cost tracking** — automatic spend logging with daily/weekly/monthly reports
+- **Dataset loading** — scale testing with CSV/JSON inputs
+- **Custom providers** — register any LLM API (Groq, Together, Azure, etc.)
 - **Retry & rate limiting** — built-in resilience for production use
 - **CLI + Python API** — use it however you want
 
@@ -280,6 +287,92 @@ async def main():
 asyncio.run(main())
 ```
 
+### Interactive Playground
+
+Launch an interactive REPL to test prompts live:
+
+```bash
+promptracer play
+promptracer play -m ollama/llama3 -s "You are a pirate"
+```
+
+Inside the playground:
+```
+>>> What is the meaning of life?
+>>> /model anthropic/claude-sonnet-4-6
+>>> /stream
+>>> /compare openai/gpt-4o,ollama/llama3
+>>> /cost
+>>> /quit
+```
+
+### Prompt Optimization
+
+Let an LLM iteratively improve your prompts:
+
+```bash
+promptracer optimize "Translate: {{text}}" -v text="Hola mundo" -n 3
+# ┌─────────┬───────┬──────────────────────────────────────────────────────┐
+# │ Version │ Score │ Prompt Preview                                       │
+# ├─────────┼───────┼──────────────────────────────────────────────────────┤
+# │ v1      │ 6/10  │ Translate: {{text}}                                  │
+# │ v2      │ 8/10  │ Translate the following text accurately: {{text}}    │
+# │ v3      │ 9/10  │ Provide a natural, accurate English translation...   │
+# └─────────┴───────┴──────────────────────────────────────────────────────┘
+```
+
+```python
+from promptracer.optimizer import optimize
+from promptracer import Prompt
+
+p = Prompt("Summarize: {{text}}")
+p.set_vars(text="Long article...")
+result = optimize(p, model="openai/gpt-4o", iterations=3)
+print(result.best.prompt_text)  # Optimized prompt
+```
+
+### Load Test Cases from CSV/JSON
+
+Scale your testing with dataset files:
+
+```python
+from promptracer import Prompt, load_cases
+from promptracer.batch import run_batch
+
+cases = load_cases("test-cases.csv")  # or .json
+result = run_batch("Translate to {{lang}}: {{text}}", cases, model="openai/gpt-4o")
+result.print_table()
+```
+
+```csv
+name,lang,text,expected
+Spanish,English,Hola mundo,Hello world
+French,English,Bonjour,Hello
+```
+
+### Custom Providers
+
+Register your own LLM provider (Azure, Groq, Together, etc.):
+
+```python
+from promptracer.providers import register_provider, Provider
+from promptracer.prompt import RunResult
+
+class GroqProvider(Provider):
+    def complete(self, prompt, *, system=None, **kwargs):
+        # Your implementation here
+        return RunResult(model=f"groq/{self.model}", ...)
+
+    async def acomplete(self, prompt, *, system=None, **kwargs):
+        return self.complete(prompt, system=system, **kwargs)
+
+register_provider("groq", GroqProvider)
+
+# Now use it everywhere
+from promptracer import Prompt
+result = Prompt("Hello").run("groq/llama-3-70b")
+```
+
 ## Supported Models
 
 | Provider | Prefix | Example | API Key |
@@ -288,6 +381,7 @@ asyncio.run(main())
 | Anthropic | `anthropic/` | `anthropic/claude-sonnet-4-6` | `ANTHROPIC_API_KEY` |
 | Google Gemini | `gemini/` or `google/` | `gemini/gemini-2.5-flash` | `GEMINI_API_KEY` |
 | Ollama | `ollama/` | `ollama/llama3` | None (local) |
+| Custom | any | `groq/llama-3-70b` | You define |
 
 ## Contributing
 

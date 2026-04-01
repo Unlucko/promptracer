@@ -6,8 +6,9 @@ from promptracer.eval import evaluate
 from promptracer.batch import run_batch, run_suite
 from promptracer.chain import Chain
 from promptracer.leaderboard import build_leaderboard
+from promptracer.dataset import load_cases
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __all__ = [
     "Prompt",
     "compare",
@@ -16,4 +17,5 @@ __all__ = [
     "run_suite",
     "Chain",
     "build_leaderboard",
+    "load_cases",
 ]

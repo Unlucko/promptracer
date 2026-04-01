@@ -45,4 +45,27 @@ def get_provider(model_string: str) -> Provider:
     return _PROVIDER_MAP[provider_name](model)
 
 
-__all__ = ["Provider", "get_provider", "parse_model"]
+def register_provider(name: str, provider_class: type[Provider]) -> None:
+    """Register a custom provider.
+
+    Usage:
+        from promptracer.providers import register_provider, Provider
+        from promptracer.prompt import RunResult
+
+        class MyProvider(Provider):
+            def complete(self, prompt, *, system=None, **kwargs):
+                # Your implementation
+                return RunResult(...)
+
+            async def acomplete(self, prompt, *, system=None, **kwargs):
+                return self.complete(prompt, system=system, **kwargs)
+
+        register_provider("myapi", MyProvider)
+        # Now use: Prompt("hello").run("myapi/my-model")
+    """
+    if not _PROVIDER_MAP:
+        _register_defaults()
+    _PROVIDER_MAP[name.lower()] = provider_class
+
+
+__all__ = ["Provider", "get_provider", "parse_model", "register_provider"]

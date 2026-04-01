@@ -1,0 +1,5 @@
+name,lang,text,expected
+Spanish to English,English,Hola mundo,Hello world
+French to English,English,Bonjour le monde,Hello world
+English to Spanish,Spanish,Good morning,Buenos días
+Technical,English,El servidor está caído,The server is down

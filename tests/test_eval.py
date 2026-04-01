@@ -1,6 +1,6 @@
 """Tests for eval module parsing."""
 
-from promptlab.eval import _parse_eval_response
+from promptpilot.eval import _parse_eval_response
 
 
 def test_parse_score_and_reasoning():

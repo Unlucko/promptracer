@@ -6,7 +6,7 @@ import os
 from abc import ABC, abstractmethod
 from typing import Any
 
-from promptlab.prompt import RunResult
+from promptpilot.prompt import RunResult
 
 
 class Provider(ABC):

@@ -111,7 +111,7 @@ class Prompt:
             model: Provider/model string like "openai/gpt-4o" or "ollama/llama3"
             **kwargs: Additional arguments passed to the provider.
         """
-        from promptlab.providers import get_provider
+        from promptpilot.providers import get_provider
 
         rendered = self.render()
         provider = get_provider(model)
@@ -119,7 +119,7 @@ class Prompt:
 
     async def arun(self, model: str, **kwargs: Any) -> RunResult:
         """Async version of run()."""
-        from promptlab.providers import get_provider
+        from promptpilot.providers import get_provider
 
         rendered = self.render()
         provider = get_provider(model)

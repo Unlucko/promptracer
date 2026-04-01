@@ -9,7 +9,7 @@ import typer
 from rich.console import Console
 
 app = typer.Typer(
-    name="promptlab",
+    name="promptpilot",
     help="The open-source prompt engineering toolkit.",
     no_args_is_help=True,
 )
@@ -35,7 +35,7 @@ def run(
     system: Optional[str] = typer.Option(None, "--system", "-s", help="System prompt"),
 ) -> None:
     """Run a prompt against a single model."""
-    from promptlab.prompt import Prompt
+    from promptpilot.prompt import Prompt
 
     if Path(prompt).exists() and prompt.endswith((".yaml", ".yml")):
         p = Prompt.load(prompt)
@@ -67,8 +67,8 @@ def compare(
     system: Optional[str] = typer.Option(None, "--system", "-s", help="System prompt"),
 ) -> None:
     """Compare a prompt across multiple models side-by-side."""
-    from promptlab.compare import compare as do_compare
-    from promptlab.prompt import Prompt
+    from promptpilot.compare import compare as do_compare
+    from promptpilot.prompt import Prompt
 
     if Path(prompt).exists() and prompt.endswith((".yaml", ".yml")):
         p = Prompt.load(prompt)
@@ -103,8 +103,8 @@ def eval(
     system: Optional[str] = typer.Option(None, "--system", "-s", help="System prompt"),
 ) -> None:
     """Evaluate a model's response using LLM-as-judge."""
-    from promptlab.eval import evaluate
-    from promptlab.prompt import Prompt
+    from promptpilot.eval import evaluate
+    from promptpilot.prompt import Prompt
 
     if Path(prompt).exists() and prompt.endswith((".yaml", ".yml")):
         p = Prompt.load(prompt)
@@ -133,7 +133,7 @@ def init(
     path: str = typer.Option("prompts", "--path", "-p", help="Directory for prompt files"),
 ) -> None:
     """Create a new prompt YAML file from a template."""
-    from promptlab.prompt import Prompt
+    from promptpilot.prompt import Prompt
 
     p = Prompt(
         "You are a helpful assistant. {{task}}",

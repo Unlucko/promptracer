@@ -8,8 +8,8 @@ from typing import Any
 
 import httpx
 
-from promptlab.prompt import RunResult
-from promptlab.providers.base import Provider
+from promptpilot.prompt import RunResult
+from promptpilot.providers.base import Provider
 
 
 class OllamaProvider(Provider):

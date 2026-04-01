@@ -5,8 +5,8 @@ from __future__ import annotations
 import time
 from typing import Any
 
-from promptlab.prompt import RunResult
-from promptlab.providers.base import Provider
+from promptpilot.prompt import RunResult
+from promptpilot.providers.base import Provider
 
 # Pricing per 1M tokens (input, output) — approximate
 _PRICING: dict[str, tuple[float, float]] = {
@@ -29,7 +29,7 @@ class OpenAIProvider(Provider):
         try:
             from openai import OpenAI
         except ImportError:
-            raise ImportError("Install openai: pip install promptlab[openai]")
+            raise ImportError("Install openai: pip install promptpilot[openai]")
 
         client = OpenAI(api_key=self._get_env("OPENAI_API_KEY"))
         messages: list[dict[str, str]] = []
@@ -62,7 +62,7 @@ class OpenAIProvider(Provider):
         try:
             from openai import AsyncOpenAI
         except ImportError:
-            raise ImportError("Install openai: pip install promptlab[openai]")
+            raise ImportError("Install openai: pip install promptpilot[openai]")
 
         client = AsyncOpenAI(api_key=self._get_env("OPENAI_API_KEY"))
         messages: list[dict[str, str]] = []

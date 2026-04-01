@@ -2,11 +2,11 @@
 
 import pytest
 
-from promptlab.providers import parse_model, get_provider
-from promptlab.providers.openai import OpenAIProvider
-from promptlab.providers.anthropic import AnthropicProvider
-from promptlab.providers.gemini import GeminiProvider
-from promptlab.providers.ollama import OllamaProvider
+from promptpilot.providers import parse_model, get_provider
+from promptpilot.providers.openai import OpenAIProvider
+from promptpilot.providers.anthropic import AnthropicProvider
+from promptpilot.providers.gemini import GeminiProvider
+from promptpilot.providers.ollama import OllamaProvider
 
 
 def test_parse_model_with_provider():

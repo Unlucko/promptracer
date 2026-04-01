@@ -5,8 +5,8 @@ from __future__ import annotations
 import time
 from typing import Any
 
-from promptlab.prompt import RunResult
-from promptlab.providers.base import Provider
+from promptpilot.prompt import RunResult
+from promptpilot.providers.base import Provider
 
 _PRICING: dict[str, tuple[float, float]] = {
     "claude-opus-4-6": (15.00, 75.00),
@@ -25,7 +25,7 @@ class AnthropicProvider(Provider):
         try:
             import anthropic
         except ImportError:
-            raise ImportError("Install anthropic: pip install promptlab[anthropic]")
+            raise ImportError("Install anthropic: pip install promptpilot[anthropic]")
 
         client = anthropic.Anthropic(api_key=self._get_env("ANTHROPIC_API_KEY"))
 
@@ -62,7 +62,7 @@ class AnthropicProvider(Provider):
         try:
             import anthropic
         except ImportError:
-            raise ImportError("Install anthropic: pip install promptlab[anthropic]")
+            raise ImportError("Install anthropic: pip install promptpilot[anthropic]")
 
         client = anthropic.AsyncAnthropic(api_key=self._get_env("ANTHROPIC_API_KEY"))
 

@@ -1,16 +1,16 @@
-# PromptLab
+# PromptPilot
 
 **The open-source prompt engineering toolkit.** Test, compare, and evaluate your prompts across any LLM — from your terminal or Python code.
 
 > Free & open-source alternative to LangSmith, PromptLayer, and Humanloop.
 
-[![PyPI](https://img.shields.io/pypi/v/promptlab)](https://pypi.org/project/promptlab/)
+[![PyPI](https://img.shields.io/pypi/v/promptpilot)](https://pypi.org/project/promptpilot/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
 ---
 
-## Why PromptLab?
+## Why PromptPilot?
 
 - **One `pip install`** — no web app, no database, no account needed
 - **Multi-provider** — OpenAI, Anthropic, Google Gemini, Ollama (local models)
@@ -23,13 +23,13 @@
 ## Install
 
 ```bash
-pip install promptlab
+pip install promptpilot
 
 # With specific providers:
-pip install promptlab[openai]          # OpenAI
-pip install promptlab[anthropic]       # Anthropic (Claude)
-pip install promptlab[google]          # Google Gemini
-pip install promptlab[all]             # All providers
+pip install promptpilot[openai]          # OpenAI
+pip install promptpilot[anthropic]       # Anthropic (Claude)
+pip install promptpilot[google]          # Google Gemini
+pip install promptpilot[all]             # All providers
 ```
 
 Ollama works out of the box — no extra install needed (just have Ollama running locally).
@@ -39,7 +39,7 @@ Ollama works out of the box — no extra install needed (just have Ollama runnin
 ### Python API
 
 ```python
-from promptlab import Prompt, compare, evaluate
+from promptpilot import Prompt, compare, evaluate
 
 # Create a prompt with template variables
 p = Prompt("Translate to {{lang}}: {{text}}")
@@ -71,7 +71,7 @@ results.print_table()
 # Evaluate quality with LLM-as-judge
 eval_result = evaluate(result, criteria="accuracy", judge="openai/gpt-4o-mini")
 eval_result.print()
-# ╭──────────── PromptLab Eval ────────────╮
+# ╭──────────── PromptPilot Eval ────────────╮
 # │ Score: 9/10                            │
 # │ Criteria: accuracy                     │
 # │ Reasoning: Accurate translation...     │
@@ -121,33 +121,33 @@ export ANTHROPIC_API_KEY=sk-ant-...
 export GEMINI_API_KEY=AI...
 
 # Run a prompt
-promptlab run "What is Python?" -m openai/gpt-4o
+promptpilot run "What is Python?" -m openai/gpt-4o
 
 # Compare models
-promptlab compare "Explain quantum computing" \
+promptpilot compare "Explain quantum computing" \
   -m "openai/gpt-4o,anthropic/claude-sonnet-4-6,ollama/llama3"
 
 # With template variables
-promptlab compare "Translate to {{lang}}: {{text}}" \
+promptpilot compare "Translate to {{lang}}: {{text}}" \
   -v lang=French -v text="Good morning" \
   -m "openai/gpt-4o,gemini/gemini-2.5-flash"
 
 # Evaluate a response
-promptlab eval "Write a haiku about coding" \
+promptpilot eval "Write a haiku about coding" \
   -m openai/gpt-4o \
   -j openai/gpt-4o-mini \
   -c "creativity and adherence to haiku format"
 
 # Create a prompt template
-promptlab init my-prompt
+promptpilot init my-prompt
 ```
 
 ### Async Support
 
 ```python
 import asyncio
-from promptlab import Prompt
-from promptlab.compare import acompare
+from promptpilot import Prompt
+from promptpilot.compare import acompare
 
 async def main():
     p = Prompt("Explain {{topic}} simply")
@@ -179,8 +179,8 @@ Contributions are welcome! Please open an issue or submit a PR.
 
 ```bash
 # Dev setup
-git clone https://github.com/Unlucko/promptlab.git
-cd promptlab
+git clone https://github.com/Unlucko/promptpilot.git
+cd promptpilot
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 

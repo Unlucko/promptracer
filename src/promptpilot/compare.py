@@ -10,7 +10,7 @@ from rich.console import Console
 from rich.table import Table
 from rich.text import Text
 
-from promptlab.prompt import Prompt, RunResult
+from promptpilot.prompt import Prompt, RunResult
 
 
 @dataclass

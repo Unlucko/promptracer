@@ -3,7 +3,7 @@
 import tempfile
 from pathlib import Path
 
-from promptlab.prompt import Prompt
+from promptpilot.prompt import Prompt
 
 
 def test_create_prompt():
